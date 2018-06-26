@@ -1,0 +1,18 @@
+#game-state-header {
+    text-align: center;
+    font-size: 25px;
+}
+
+.player-header {
+    text-align: center
+}
+
+.player-card {
+    float: right;
+    text-align: center;
+    padding-left: 140px;
+}
+
+#player-row {
+    display: contents;
+}
