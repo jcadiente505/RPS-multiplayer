@@ -16,3 +16,37 @@
 #player-row {
     display: contents;
 }
+
+.display-4 {
+    text-align: center;
+}
+
+#name-input {
+    text-align: center;
+    margin-left: 450px;
+}
+
+#p1-wins {
+    float: left;
+    position: relative;
+    display: contents;
+}
+
+#p2-wins{
+    float: left;
+    position: relative;
+    display: contents;
+}
+
+#chatbox {
+    margin-left: 125px;
+    padding-left: 678px;
+}
+
+#chat-header {
+    text-align: center;
+}
+
+#chat {
+    margin-left: 500px;
+}

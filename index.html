@@ -13,12 +13,13 @@
 
 <body>
 
-    <div class="cointainer">
+    <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="jumbotron jumbotron-fluid">
                     <div class="container">
                         <h1 class="display-4">Rock Paper Scissors!</h1>
+                        <input id="name-input" type="text" placeholder="Your Name">
                     </div>
                 </div>
             </div>
@@ -33,33 +34,54 @@
                 <div class="col-md-6 player-card">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
-                            <h5 class="card-title">Player One</h5>
-                            <img class="card-img-top" src=".../100px180/" alt="Card image cap">
+                            <h5 class="card-title" data="player-name">Player One</h5>
+                            <img class="card-img-top">
                             <h5 class="card-text">Make a selection!</h5>
-                            <button class="btn btn-primary">Rock!</button>
-                            <button class="btn btn-primary">Paper!</button>
-                            <button class="btn btn-primary">Scissors!</button>
+                            <button class="btn btn-primary" data="rock-choice">Rock!</button>
+                            <button class="btn btn-primary" data="paper-choice">Paper!</button>
+                            <button class="btn btn-primary" data="scissors-choice">Scissors!</button>
+                            <p id="p1-wins">Wins:</p>
+                            <p id="p1-losses">Losses:</p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6 player-card">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
-                            <h5 class="card-title">Player Two</h5>
-                            <img class="card-img-top" src=".../100px180/" alt="Card image cap">
+                            <h5 class="card-title" data="player-name">Player Two</h5>
+                            <img class="card-img-top">
                             <h5 class="card-text">Make a selection!</h5>
-                            <button class="btn btn-primary">Rock!</button>
-                            <button class="btn btn-primary">Paper!</button>
-                            <button class="btn btn-primary">Scissors!</button>
+                            <button class="btn btn-primary" data="rock-choice">Rock!</button>
+                            <button class="btn btn-primary" data="paper-choice">Paper!</button>
+                            <button class="btn btn-primary" data="scissors-choice">Scissors!</button>
+                            <p id="p2-wins">Wins:</p>
+                            <p id="p2-losses">Losses:</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="row" id="chat">
+        <div class="col col-md-6 col-md-offset-3">
+            <h1 id="chat-header">Talk Smack!</h1>
+            <textarea class="form-control" rows="10" id="chatlog"></textarea>
+            <form class="form-inline">
+                <div class="row">
+                    <div class="col-md-8">
+                        <input type="text" class="form-control" id="message">
+                    </div>
+                    <div class="col-md-4">
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                    </row>
+            </form>
+            </div>
+        </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="./assets/javascript/app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.1.0/firebase.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="./assets/javascript/app.js"></script>
 </body>
 
 </html>
