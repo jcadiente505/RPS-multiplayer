@@ -20,6 +20,7 @@
                     <div class="container">
                         <h1 class="display-4">Rock Paper Scissors!</h1>
                         <input id="name-input" type="text" placeholder="Your Name">
+                        <button id="name-button"type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </div>
             </div>
@@ -28,18 +29,18 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <h1 id="game-state-header" data="game-state">waiting for another player...</h1>
+                <h1 id="game-state-header">waiting for another player...</h1>
             </div>
             <div class="row" id="player-row">
                 <div class="col-md-6 player-card">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
-                            <h5 class="card-title" data="player-name">Player One</h5>
+                            <h5 class="card-title" id="player1-name"></h5>
                             <img class="card-img-top">
                             <h5 class="card-text">Make a selection!</h5>
-                            <button class="btn btn-primary" data="rock-choice">Rock!</button>
-                            <button class="btn btn-primary" data="paper-choice">Paper!</button>
-                            <button class="btn btn-primary" data="scissors-choice">Scissors!</button>
+                            <button class="btn btn-primary rps-selector" data-choice="rock-choice">Rock!</button>
+                            <button class="btn btn-primary rps-selector" data-choice="paper-choice">Paper!</button>
+                            <button class="btn btn-primary rps-selector" data-choice="scissors-choice">Scissors!</button>
                             <p id="p1-wins">Wins:</p>
                             <p id="p1-losses">Losses:</p>
                         </div>
@@ -48,12 +49,12 @@
                 <div class="col-md-6 player-card">
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
-                            <h5 class="card-title" data="player-name">Player Two</h5>
+                            <h5 class="card-title" id="player2-name"></h5>
                             <img class="card-img-top">
                             <h5 class="card-text">Make a selection!</h5>
-                            <button class="btn btn-primary" data="rock-choice">Rock!</button>
-                            <button class="btn btn-primary" data="paper-choice">Paper!</button>
-                            <button class="btn btn-primary" data="scissors-choice">Scissors!</button>
+                            <button class="btn btn-primary rps-selector" data-choice="rock-choice">Rock!</button>
+                            <button class="btn btn-primary rps-selector" data-choice="paper-choice">Paper!</button>
+                            <button class="btn btn-primary rps-selector" data-choice="scissors-choice">Scissors!</button>
                             <p id="p2-wins">Wins:</p>
                             <p id="p2-losses">Losses:</p>
                         </div>
