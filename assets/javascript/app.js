@@ -28,14 +28,18 @@ database.ref("/players/").on("value", function(snapshot){
   if(snapshot.child("playerOne").exists()){
     playerOne = snapshot.val().playerOne;
     $("#player1-name").text(playerOne.name);
+    $("#game-state-header").text("Waiting for Player Two")
   }
   else {
-
+    $("#game-state-header").text("Waiting for Players")
+    console.log("player does not exist")
   }
 
 if(snapshot.child("playerTwo").exists()){
   playerTwo = snapshot.val().playerTwo;
   $("#player2-name").text(playerTwo.name);
+  $("#game-state-header").text("Player One's turn!")
+    console.log("player does not exist")
  
 }
 else {
@@ -98,18 +102,19 @@ $(".rps-selector").on("click", function(button){
 
   if (playerOne != "false" && playerTwo != "false"){
 
-    if (playerOne.choice === "" && playerTwo.choice === "") {
+    if (playerOne.choice === "blank" && playerTwo.choice === "blank") {
       $("#game-state-header").html("Player One's turn!");
       console.log("player one turn");
-      playerOne.choice = $(this).attr("data-choice")
-      database.ref().child("/players/playerOne.choice").set(playerOne.choice);
+      playerOne.choice = $(this).val();
+      database.ref().child("/players/playerOne/choice").set(playerOne.choice);
       console.log(playerOne.choice)
+      $("#game-state-header").text("Player Two's Turn!")
     }
-    else if (playerOne.choice != "" && playerTwo.choice === "") {
+    else if (playerOne.choice != "blank" && playerTwo.choice === "blank") {
       $("game-state-header").text("Player Two's turn!");
       console.log("player two turn");
-      playerTwo.choice = $(this).attr("data-choice")
-      database.ref().child("/players/playerTwo.choice").set(playerTwo.choice);
+      playerTwo.choice = $(this).val();
+      database.ref().child("/players/playerTwo/choice").set(playerTwo.choice);
     }
   }
   else {
