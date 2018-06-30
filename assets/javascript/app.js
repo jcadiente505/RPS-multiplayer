@@ -84,7 +84,7 @@ database.ref("/turn/").on("value", function (snapshot) {
     playerTurn = 1;
 
     // Update the display if both players are in the game
-    if (playerOne.choice && playerTwo.choice) {
+    if (playerOne.choice === "blank" && playerTwo.choice === "blank") {
 
       $("#game-state-header").html("Waiting on " + playerOne.name + " to choose!");
 
@@ -94,7 +94,7 @@ database.ref("/turn/").on("value", function (snapshot) {
     playerTurn = 2;
 
     // Update the display if both players are in the game
-    if (playerOne.choice && playerTwo.choice) {
+    if (playerOne.choice != "blank" && playerTwo.choice === "blank") {
 
       $("#game-state-header").html("Waiting on " + playerTwo.name + " to choose!");
 
@@ -191,7 +191,7 @@ $("#message").on("click", function (event) {
   // First, make sure that the player exists and the message box is not empty
   if ((playerName !== "") && ($("#message").val().trim() !== "")) {
     // Grab the message from the input box and subsequently reset the input box
-    var msg = PlayerName + ": " + $("#message").val().trim();
+    var msg = playerName + ": " + $("#message").val().trim();
     $("#message").val("");
 
     // Get a key for the new chat entry
@@ -211,26 +211,35 @@ function choiceCompare() {
 			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/playerOne/tie").set(playerOne.tie + 1);
       database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
-      database.ref().child("/players/playerOne/choice").set("blank")
+      $("#player1-selected").text("You chose Rock");
+      $("#player2-selected").text("You chose Rock");
+      database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text("Tie Game!")
 		} else if (playerTwo.choice === "Paper") {
 			// PlayerTwo wins
 			console.log("paper wins");
 
-			database.ref().child("/outcome/").set("Paper wins!");
+			database.ref().child("/outcome/").set( playerTwo.name + " wins!");
 			database.ref().child("/players/playerOne/loss").set(playerOne.loss + 1);
-			database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
+      database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
+      $("#player1-selected").text("You chose Rock");
+      $("#player2-selected").text("You chose Paper");
       database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text(playerTwo.name + " wins!")
     } else { // scissors
 			// PlayerOne wins
 			console.log("rock wins");
 
-			database.ref().child("/outcome/").set("Rock wins!");
+			database.ref().child("/outcome/").set(playerOne.name + " wins!");
 			database.ref().child("/players/playerOne/win").set(playerOne.win + 1);
       database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      $("#player1-selected").text("You chose Rock");
+      $("#player2-selected").text("You chose Scissors");
       database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text(playerOne.name + " wins!")
 		}
 
 	} else if (playerOne.choice === "Paper") {
@@ -238,11 +247,14 @@ function choiceCompare() {
 			// PlayerOne wins
 			console.log("paper wins");
 
-			database.ref().child("/outcome/").set("Paper wins!");
+			database.ref().child("/outcome/").set(playerOne.name + " wins!");
 			database.ref().child("/players/playerOne/win").set(playerOne.win + 1);
       database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      $("#player1-selected").text("You chose Paper");
+      $("#player2-selected").text("You chose Rock");
       database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text(playerOne.name + " wins")
 		} else if (playerTwo.choice === "Paper") {
 			// Tie
 			console.log("tie");
@@ -250,17 +262,23 @@ function choiceCompare() {
 			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/playerOne/tie").set(playerOne.tie + 1);
       database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
+      $("#player1-selected").text("You chose Paper");
+      $("#player2-selected").text("You chose Paper");
       database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text("Tie Game!")
 		} else { // Scissors
 			// PlayerTwo wins
 			console.log("scissors win");
 
-			database.ref().child("/outcome/").set("Scissors win!");
+			database.ref().child("/outcome/").set(playerTwo.name + " wins!");
 			database.ref().child("/players/playerOne/loss").set(playerOne.loss + 1);
       database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
+      $("#player1-selected").text("You chose Paper");
+      $("#player2-selected").text("You chose Scissors");
       database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text(playerTwo.name + " wins!")
 		}
 
 	} else if (playerOne.choice === "Scissors") {
@@ -268,20 +286,26 @@ function choiceCompare() {
 			// PlayerTwo wins
 			console.log("rock wins");
 
-			database.ref().child("/outcome/").set("Rock wins!");
+			database.ref().child("/outcome/").set(playerTwo.name + " wins!");
 			database.ref().child("/players/playerOne/loss").set(playerOne.loss + 1);
       database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
+      $("#player1-selected").text("You chose Scissors!");
+      $("#player2-selected").text("You chose Rock");
       database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text(playerTwo.name + " wins!")
 		} else if (playerTwo.choice === "Paper") {
 			// PlayerOne wins
 			console.log("scissors win");
 
-			database.ref().child("/outcome/").set("Scissors win!");
+			database.ref().child("/outcome/").set(playerOne.name + " wins!");
 			database.ref().child("/players/playerOne/win").set(playerOne.win + 1);
       database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      $("#player1-selected").text("You chose Scissors");
+      $("#player2-selected").text("You chose Paper");
       database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text(playerOne.name + " wins!")
 		} else {
 			// Tie
 			console.log("tie");
@@ -289,8 +313,11 @@ function choiceCompare() {
 			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/playerOne/tie").set(playerOne.tie + 1);
       database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
+      $("player1-selected").text("You chose Scissors");
+      $("player2-selected").text("You chose Scissors");
       database.ref().child("/players/playerOne/choice").set("blank");
       database.ref().child("/players/playerTwo/choice").set("blank");
+      $("#game-state-header").text("Tie Game!")
 		}
 
   }
