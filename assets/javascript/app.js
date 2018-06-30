@@ -189,7 +189,7 @@ $("#message").on("click", function (event) {
   event.preventDefault();
 
   // First, make sure that the player exists and the message box is not empty
-  if ((PlayerName !== "") && ($("#message").val().trim() !== "")) {
+  if ((playerName !== "") && ($("#message").val().trim() !== "")) {
     // Grab the message from the input box and subsequently reset the input box
     var msg = PlayerName + ": " + $("#message").val().trim();
     $("#message").val("");
@@ -210,7 +210,9 @@ function choiceCompare() {
 
 			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/playerOne/tie").set(playerOne.tie + 1);
-			database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
+      database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
+      database.ref().child("/players/playerOne/choice").set("blank")
+      database.ref().child("/players/playerTwo/choice").set("blank");
 		} else if (playerTwo.choice === "Paper") {
 			// PlayerTwo wins
 			console.log("paper wins");
@@ -218,13 +220,17 @@ function choiceCompare() {
 			database.ref().child("/outcome/").set("Paper wins!");
 			database.ref().child("/players/playerOne/loss").set(playerOne.loss + 1);
 			database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
-		} else { // scissors
+      database.ref().child("/players/playerOne/choice").set("blank");
+      database.ref().child("/players/playerTwo/choice").set("blank");
+    } else { // scissors
 			// PlayerOne wins
 			console.log("rock wins");
 
 			database.ref().child("/outcome/").set("Rock wins!");
 			database.ref().child("/players/playerOne/win").set(playerOne.win + 1);
-			database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      database.ref().child("/players/playerOne/choice").set("blank");
+      database.ref().child("/players/playerTwo/choice").set("blank");
 		}
 
 	} else if (playerOne.choice === "Paper") {
@@ -234,21 +240,27 @@ function choiceCompare() {
 
 			database.ref().child("/outcome/").set("Paper wins!");
 			database.ref().child("/players/playerOne/win").set(playerOne.win + 1);
-			database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      database.ref().child("/players/playerOne/choice").set("blank");
+      database.ref().child("/players/playerTwo/choice").set("blank");
 		} else if (playerTwo.choice === "Paper") {
 			// Tie
 			console.log("tie");
 
 			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/playerOne/tie").set(playerOne.tie + 1);
-			database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
+      database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
+      database.ref().child("/players/playerOne/choice").set("blank");
+      database.ref().child("/players/playerTwo/choice").set("blank");
 		} else { // Scissors
 			// PlayerTwo wins
 			console.log("scissors win");
 
 			database.ref().child("/outcome/").set("Scissors win!");
 			database.ref().child("/players/playerOne/loss").set(playerOne.loss + 1);
-			database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
+      database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
+      database.ref().child("/players/playerOne/choice").set("blank");
+      database.ref().child("/players/playerTwo/choice").set("blank");
 		}
 
 	} else if (playerOne.choice === "Scissors") {
@@ -258,21 +270,27 @@ function choiceCompare() {
 
 			database.ref().child("/outcome/").set("Rock wins!");
 			database.ref().child("/players/playerOne/loss").set(playerOne.loss + 1);
-			database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
+      database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
+      database.ref().child("/players/playerOne/choice").set("blank");
+      database.ref().child("/players/playerTwo/choice").set("blank");
 		} else if (playerTwo.choice === "Paper") {
 			// PlayerOne wins
 			console.log("scissors win");
 
 			database.ref().child("/outcome/").set("Scissors win!");
 			database.ref().child("/players/playerOne/win").set(playerOne.win + 1);
-			database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
+      database.ref().child("/players/playerOne/choice").set("blank");
+      database.ref().child("/players/playerTwo/choice").set("blank");
 		} else {
 			// Tie
 			console.log("tie");
 
 			database.ref().child("/outcome/").set("Tie game!");
 			database.ref().child("/players/playerOne/tie").set(playerOne.tie + 1);
-			database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
+      database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
+      database.ref().child("/players/playerOne/choice").set("blank");
+      database.ref().child("/players/playerTwo/choice").set("blank");
 		}
 
   }
