@@ -19,147 +19,74 @@ var loseCounter = 0;
 var playerTurn = 1;
 var playerName
 // database listener for values and player status
-
-database.ref("/players/").on("value", function (snapshot) {
-
+database.ref("/players/").on("value", function(snapshot){
+  
   event.preventDefault();
-  // if statement too see assign player one/two status too user
-  if (snapshot.child("playerOne").exists()) {
 
+  if (snapshot.child("playerOne").exists()) {
+    
     playerOne = snapshot.val().playerOne;
     $("#player1-name").text(playerOne.name);
-    $("#game-state-header").text("Waiting for Player Two")
-
+    $("#p1-wins").text("Wins: " + playerOne.win);
+    $("#p1-losses").text("Losses: " + playerOne.loss);
   }
   else {
-
-    $("#game-state-header").html("Waiting for Player One")
-    console.log("player one does not exist")
-
+    console.log("no players")
   }
-
   if (snapshot.child("playerTwo").exists()) {
 
     playerTwo = snapshot.val().playerTwo;
     $("#player2-name").text(playerTwo.name);
-
+    $("#p2-wins").text("Wins: " + playerTwo.win);
+    $("#p2-losses").text("Losses: "+ playerTwo.loss)
   }
-
-  if (snapshot.child("playerOne").exists() && snapshot.child("playerTwo").exists()) {
-
-    $("#game-state-header").text("Waiting for " + playerOne.name + " to choose!")
-
+  else {
+    console.log("player two does not exist")
   }
-
 });
 
 // Database listener for player disconnections 
-database.ref("/players/").on("child_removed", function (snapshot) {
 
-  var msg = snapshot.val().name + " has disconnected!";
-
-  // Get a key for the disconnection chat entry
-  var chatKey = database.ref().child("/chat/").push().key;
-
-  // Save the disconnection chat entry
-  database.ref("/chat/" + chatKey).set(msg);
-
-});
 
 // chat message database listener 
-database.ref("/chat/").on("child_added", function (snapshot) {
 
-  var chatMsg = snapshot.val();
 
-  $("#chatlog").append(chatMsg);
-  $("#chatlog").scrollTop($("#chatlog")[0].scrollHeight);
-
-});
-
-// listens for each turn 
+// listens for each turn
 database.ref("/turn/").on("value", function (snapshot) {
   // Check if it's player1's turn
   if (snapshot.val() === 1) {
     console.log("TURN 1");
     playerTurn = 1;
 
-    // Update the display if both players are in the game
-    if (playerOne.choice === "blank" && playerTwo.choice === "blank") {
+    $("#game-state-header").html("Waiting on " + playerOne.name + " to choose!");
 
-      $("#game-state-header").html("Waiting on " + playerOne.name + " to choose!");
-
-    }
   } else if (snapshot.val() === 2) {
     console.log("TURN 2");
     playerTurn = 2;
 
-    // Update the display if both players are in the game
-    if (playerOne.choice != "blank" && playerTwo.choice === "blank") {
+    $("#game-state-header").html("Waiting on " + playerTwo.name + " to choose!");
 
-      $("#game-state-header").html("Waiting on " + playerTwo.name + " to choose!");
+  }
+  else if (snapshot.val() === 3) {
+    console.log("turn 3");
+    playerTurn = 3
 
-    }
+    $("#game-state-header").html("The Winner is")
   }
 });
-
 // listener for game outcome
 database.ref("/outcome/").on("value", function (snapshot) {
   $("#game-state-header").text(snapshot.val());
 });
+
 // create listener for button values store them into firebase
 
 $("#name-button").on("click", function () {
-
-  event.preventDefault();
-
-  // store the player name in variable
-  playerName = $("#name-input").val().trim();
-  // if statement to see which player you are
-  if (playerOne === "false") {
-    playerOne = {
-      name: playerName,
-      win: 0,
-      loss: 0,
-      choice: "blank"
-    };
-    alert("you are Player One");
-    database.ref().child("/players/playerOne").set(playerOne);
-    database.ref().child("/turn").set(1);
-    database.ref("/players/playerOne").onDisconnect().remove();
-  }
-  else if ((playerOne != "false") && (playerTwo === "false")) {
-    playerTwo = {
-      name: playerName,
-      win: 0,
-      loss: 0,
-      choice: "blank"
-    };
-    alert("you are Player Two");
-    database.ref().child("/players/playerTwo").set(playerTwo);
-    database.ref("/players/playerTwo").onDisconnect().remove();
-  }
-  console.log(playerName);
-  // Add a user joining message to the chat
-  var msg = playerName + " has joined!";
-  console.log(msg);
-
-  // Get a key for the join chat entry
-  var chatKey = database.ref().child("/chat/").push().key;
-
-  // Save the join chat entry
-  database.ref("/chat/" + chatKey).set(msg);
-
-  // Reset the name input box
-  $("#name-input").val("");
-
-  return false;
+  playerConstructor();
 });
 
-$(".rps-selector").on("click", function (button) {
+$(".rps-selector").on("click", function(){
 
-  event.preventDefault();
-
-  // make sure both people are in the game
   if (playerOne && playerTwo && (playerName === playerOne.name) && (playerTurn === 1)) {
 
     playerOne.choice = $(this).val();
@@ -171,37 +98,60 @@ $(".rps-selector").on("click", function (button) {
   }
   else if (playerOne && playerTwo && (playerName === playerTwo.name) && (playerTurn === 2)) {
 
-
     playerTwo.choice = $(this).val();
     database.ref().child("/players/playerTwo/choice").set(playerTwo.choice);
-    console.log(playerTwo.choice)
+    console.log(playerTwo.choice);
+    playerTurn = 3;
+    database.ref().child("/turn").set(3);
+  }
+
+  if (playerTurn === 3){
+
     choiceCompare();
 
   }
 
-
-  
-
 });
 
-$("#message").on("click", function (event) {
+$("#reset").on("click", function(){
+  Reset();
+})
 
-  event.preventDefault();
 
-  // First, make sure that the player exists and the message box is not empty
-  if ((playerName !== "") && ($("#message").val().trim() !== "")) {
-    // Grab the message from the input box and subsequently reset the input box
-    var msg = playerName + ": " + $("#message").val().trim();
-    $("#message").val("");
+// FUNCTIONS!!!!
+function playerConstructor(){
 
-    // Get a key for the new chat entry
-    var chatKey = database.ref().child("/chat/").push().key;
-
-    // Save the new chat entry
-    database.ref("/chat/" + chatKey).set(msg);
+  playerName = $("#name-input").val().trim();
+  // if statement to see which player you are
+  if (playerOne === "false") {
+    playerOne = {
+      name: playerName,
+      win: 0,
+      loss: 0,
+      tie: 0,
+      choice: "blank"
+    };
+    alert("you are Player One");
+    database.ref().child("/players/playerOne").set(playerOne);
+    database.ref().child("/turn").set(1);
+    database.ref("/players/playerOne").onDisconnect().remove();
   }
-});
-
+  else {
+    playerTwo = {
+      name: playerName,
+      win: 0,
+      loss: 0,
+      tie: 0,
+      choice: "blank"
+    };
+    alert("you are Player Two");
+    database.ref().child("/players/playerTwo").set(playerTwo);
+    database.ref("/players/playerTwo").onDisconnect().remove();
+  }
+  console.log(playerName);
+  console.log(playerOne);
+  console.log(playerTwo);
+}
 function choiceCompare() {
 	if (playerOne.choice === "Rock") {
 		if (playerTwo.choice === "Rock") {
@@ -213,9 +163,6 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
       $("#player1-selected").text("You chose Rock");
       $("#player2-selected").text("You chose Rock");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
-      $("#game-state-header").text("Tie Game!")
 		} else if (playerTwo.choice === "Paper") {
 			// PlayerTwo wins
 			console.log("paper wins");
@@ -225,9 +172,6 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
       $("#player1-selected").text("You chose Rock");
       $("#player2-selected").text("You chose Paper");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
-      $("#game-state-header").text(playerTwo.name + " wins!")
     } else { // scissors
 			// PlayerOne wins
 			console.log("rock wins");
@@ -237,9 +181,6 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
       $("#player1-selected").text("You chose Rock");
       $("#player2-selected").text("You chose Scissors");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
-      $("#game-state-header").text(playerOne.name + " wins!")
 		}
 
 	} else if (playerOne.choice === "Paper") {
@@ -252,9 +193,6 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
       $("#player1-selected").text("You chose Paper");
       $("#player2-selected").text("You chose Rock");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
-      $("#game-state-header").text(playerOne.name + " wins")
 		} else if (playerTwo.choice === "Paper") {
 			// Tie
 			console.log("tie");
@@ -264,9 +202,6 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
       $("#player1-selected").text("You chose Paper");
       $("#player2-selected").text("You chose Paper");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
-      $("#game-state-header").text("Tie Game!")
 		} else { // Scissors
 			// PlayerTwo wins
 			console.log("scissors win");
@@ -276,9 +211,6 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
       $("#player1-selected").text("You chose Paper");
       $("#player2-selected").text("You chose Scissors");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
-      $("#game-state-header").text(playerTwo.name + " wins!")
 		}
 
 	} else if (playerOne.choice === "Scissors") {
@@ -291,9 +223,6 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/win").set(playerTwo.win + 1);
       $("#player1-selected").text("You chose Scissors!");
       $("#player2-selected").text("You chose Rock");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
-      $("#game-state-header").text(playerTwo.name + " wins!")
 		} else if (playerTwo.choice === "Paper") {
 			// PlayerOne wins
 			console.log("scissors win");
@@ -303,9 +232,6 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/loss").set(playerTwo.loss + 1);
       $("#player1-selected").text("You chose Scissors");
       $("#player2-selected").text("You chose Paper");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
-      $("#game-state-header").text(playerOne.name + " wins!")
 		} else {
 			// Tie
 			console.log("tie");
@@ -315,12 +241,15 @@ function choiceCompare() {
       database.ref().child("/players/playerTwo/tie").set(playerTwo.tie + 1);
       $("player1-selected").text("You chose Scissors");
       $("player2-selected").text("You chose Scissors");
-      database.ref().child("/players/playerOne/choice").set("blank");
-      database.ref().child("/players/playerTwo/choice").set("blank");
       $("#game-state-header").text("Tie Game!")
 		}
 
   }
+}
+
+function Reset() {
+  database.ref().child("/players/playerOne/choice").set("blank");
+  database.ref().child("/players/playerTwo/choice").set("blank");
   playerTurn = 1;
 	database.ref().child("/turn").set(1);
 }
